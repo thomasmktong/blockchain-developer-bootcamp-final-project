@@ -80,6 +80,6 @@ exports.providers = {
 exports.deployConfigs = {
     selectedProvider: "aave", // name of the selected provider. Must be defined in the object {providers} above.
     inboundCurrencySymbol: "dai", // name of the inbound currency symbol. Must be defined in the object {providers.network} above.
-    segmentLength: 3600, // in seconds
+    segmentLength: 604800, // in seconds
     minSegmentForReward: 3, // integer number of segments players have to stay in game for the interest (input 3 if players can withdraw after 4th deposit).
 };
