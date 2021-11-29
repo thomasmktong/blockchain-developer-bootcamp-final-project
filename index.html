@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreakBank</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 300;
+        }
+
+        .btn>span {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-8">
+                <h1>
+                    <span class="material-icons">
+                        local_fire_department
+                    </span>
+                    <span class="material-icons">
+                        local_fire_department
+                    </span>
+                    <span class="material-icons">
+                        local_fire_department
+                    </span>
+                    <span class="material-icons">
+                        account_balance
+                    </span>
+                    | Streak Bank
+                </h1>
+            </div>
+            <div class="col-4 text-end">
+                <button type="button" class="btn btn-primary" id="btn-connect-wallet">
+                    <span class="material-icons">
+                        account_balance_wallet
+                    </span>
+                    <span id="txt-wallet-addr">Connect Wallet</span>
+                </button>
+                <button type="button" class="btn btn-light" id="btn-approve-dai">
+                    Approve DAI
+                </button>
+            </div>
+        </div>
+        <div class="row py-5">
+            <div class="col-12">
+                <p class="lead text-center">
+                    <br />Keep saving every week. Maintain your streak for at least 4 weeks.
+                    <br />Earn extra interest from those who miss their streak.
+                    <br />(Deposit goes to <a href="https://aave.com/" target="_blank">Aave</a>)
+                </p>
+            </div>
+        </div>
+
+        <div class="row pt-3">
+            <div class="col-12">
+                <p class="text-center" id="txt-connect-wallet">
+                    Connect wallet to continue...
+                </p>
+                <p class="text-center" id="txt-start-deposit">
+                    I would like to start saving every week...
+                </p>
+                <p class="text-center" id="txt-week-todeposit">
+                    Deposit for this week...
+                </p>
+                <p class="text-center" id="txt-week-deposited">
+                    Deposited this week, waiting for next week...
+                </p>
+                <p class="text-center" id="txt-week-missed">
+                    Streak missed! Withdraw and start saving again...
+                </p>
+            </div>
+        </div>
+        <div class="row pb-3 justify-content-center">
+            <div class="col-4">
+                <div class="input-group">
+                    <span class="input-group-text">DAI $</span>
+                    <input type="number" min="1" step="1" class="form-control" aria-label="Amount"
+                        placeholder="Amount..." id="input-deposit-amt">
+                    <span class="input-group-text">.00</span>
+                </div>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-success" style="width: 95px;" id="btn-deposit">Deposit</button>
+            </div>
+        </div>
+        <div class="row pb-5 justify-content-center">
+            <div class="col-4">
+                <div class="input-group">
+                    <span class="input-group-text">DAI $</span>
+                    <input type="text" class="form-control" aria-label="Amount" placeholder="Amount..." value="0"
+                        id="input-withdraw-amt">
+                </div>
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-danger" style="width: 95px;" id="btn-withdraw">Withdraw</button>
+            </div>
+        </div>
+
+        <div class="row pt-3">
+            <div class="col-12">
+                <p class="text-center">
+                    Current Streak
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="spinner-border" role="status" id="txt-current-streak-spinner">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div id="txt-current-streak"></div>
+            </div>
+        </div>
+
+        <div class="row pt-5 pb-3">
+            <div class="col-4 text-center">Current Savers</div>
+            <div class="col-4 text-center">Total Principal Deposits $</div>
+            <div class="col-4 text-center">Total Interest Earned $</div>
+        </div>
+        <div class="row" id="div-stat-loading">
+            <div class="col-4 text-center" id="txt-current-savers">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="col-4 text-center" id="txt-total-deposits">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="col-4 text-center" id="txt-total-interest">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed top-0 end-0 p-5" style="z-index: 11">
+        <div class="toast" role="toastMessage" aria-live="assertive" aria-atomic="true" id="toast-template">
+            <div class="toast-body">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = "0x840C00B89c4ad0B9C84282010069C0222f601cbB";
+        const daiAddress = "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD";
+
+        var contractABI = null;
+        var erc20ABI = null;
+
+        $.getJSON("streakBankAbi.json", function (data) {
+            contractABI = data;
+        });
+
+        $.getJSON("erc20Abi.json", function (data) {
+            erc20ABI = data;
+        });
+
+        var web3 = null;
+        var contract = null;
+        var dai = null;
+
+        async function initWeb3() {
+            if (typeof window.ethereum !== "undefined") {
+                await ethereum.request({ method: 'eth_requestAccounts' });
+                web3 = new Web3(window.ethereum);
+                if (window.ethereum.chainId !== '0x2a') { // kovan
+                    await ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: '0x2a' }],
+                    });
+                }
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+                dai = new web3.eth.Contract(erc20ABI, daiAddress);
+            } else {
+                toastMessage("Please install MetaMask");
+            }
+        }
+
+        function refresh() {
+            var txtWalletAddress = "Connect Wallet";
+
+            $("#txt-connect-wallet").show();
+            $("#txt-start-deposit").hide();
+            $("#txt-week-todeposit").hide();
+            $("#txt-week-deposited").hide();
+            $("#txt-week-missed").hide();
+
+            $("#btn-deposit").prop('disabled', true);
+            $("#input-deposit-amt").prop('disabled', true);
+
+            $("#btn-withdraw").prop('disabled', true);
+            $("#input-withdraw-amt").prop('disabled', true);
+
+            $("#txt-current-streak-spinner").show();
+            $("#txt-current-streak").empty();
+
+            if (web3 && contract) {
+
+                // Connect Wallet button
+                var ownerAddress = web3.currentProvider.selectedAddress;
+                txtWalletAddress = "0x" + ownerAddress.slice(-4);
+                $("#txt-wallet-addr").text(txtWalletAddress);
+
+                // Global stat
+                contract.methods.activePlayersCount().call().then((activePlayersCount) => {
+                    $("#txt-current-savers").text(activePlayersCount);
+                });
+
+                contract.methods.totalGamePrincipal().call().then((totalGamePrincipal) => {
+                    $("#txt-total-deposits").text(Number(totalGamePrincipal / 10 ** 18).toFixed(0));
+                });
+
+                contract.methods.getTotalInterestEarned().call().then((totalInterestEarned) => {
+                    $("#txt-total-interest").text(Number(totalInterestEarned / 10 ** 18).toFixed(20));
+                });
+
+                // Player controls
+                contract.methods.players(ownerAddress).call().then((player) => {
+                    var joined = player.addr.toUpperCase() === ownerAddress.toUpperCase() && !player.withdrawn;
+
+                    $("#txt-current-streak-spinner").hide();
+
+                    if (!joined) {
+                        // Player has NOT deposited before
+                        $("#txt-connect-wallet").hide();
+                        $("#txt-start-deposit").show();
+                        $("#txt-week-todeposit").hide();
+                        $("#txt-week-deposited").hide();
+                        $("#txt-week-missed").hide();
+
+                        $("#btn-deposit").prop('disabled', false);
+                        $("#input-deposit-amt").prop('disabled', false);
+
+                        $("#btn-withdraw").prop('disabled', true);
+                        $("#input-withdraw-amt").prop('disabled', true);
+
+                        var span = $('<span />').addClass('material-icons').text('check_box_outline_blank');
+                        span.appendTo("#txt-current-streak");
+
+                    } else {
+                        // Player has deposited before
+                        $("#input-deposit-amt").val(Number(player.amountEachSegment / 10 ** 18).toFixed(0));
+                        $("#input-withdraw-amt").val(Number(player.amountPaid / 10 ** 18).toFixed(0));
+
+                        // Amt can't changed anymore after joining game
+                        $("#input-deposit-amt").prop('disabled', true);
+                        $("#input-withdraw-amt").prop('disabled', true);
+
+                        contract.methods.getCurrentSegment().call().then((currentSegmentStr) => {
+
+                            var segmentJoined = Number(player.segmentJoined);
+                            var mostRecentSegmentPaid = Number(player.mostRecentSegmentPaid);
+                            var currentSegment = Number(currentSegmentStr);
+
+                            console.log(`segmentJoined ${segmentJoined}, mostRecentSegmentPaid ${mostRecentSegmentPaid}, currentSegment ${currentSegment}`)
+
+                            for(var i = segmentJoined; i <= mostRecentSegmentPaid; i++) {
+                                var span = $('<span />').addClass('material-icons').text('local_fire_department');
+                                span.appendTo("#txt-current-streak");
+                            }
+
+                            for(var i = mostRecentSegmentPaid; i < currentSegment; i++) {
+                                var span = $('<span />').addClass('material-icons').text('check_box_outline_blank');
+                                span.appendTo("#txt-current-streak");
+                            }
+
+                            if (mostRecentSegmentPaid + 1 === currentSegment) {
+                                // To deposit in this week - enable deposit, enable withdraw
+                                $("#txt-connect-wallet").hide();
+                                $("#txt-start-deposit").hide();
+                                $("#txt-week-todeposit").show();
+                                $("#txt-week-deposited").hide();
+                                $("#txt-week-missed").hide();
+
+                                $("#btn-deposit").prop('disabled', false);
+                                $("#btn-withdraw").prop('disabled', false);
+
+                            } else if (mostRecentSegmentPaid === currentSegment) {
+                                // Deposited for this segment already - disable deposit, enable withdraw
+                                $("#txt-connect-wallet").hide();
+                                $("#txt-start-deposit").hide();
+                                $("#txt-week-todeposit").hide();
+                                $("#txt-week-deposited").show();
+                                $("#txt-week-missed").hide();
+
+                                $("#btn-deposit").prop('disabled', true);
+                                $("#btn-withdraw").prop('disabled', false);
+
+                            } else if (mostRecentSegmentPaid + 1 < currentSegment) {
+                                // Streak missed - disable deposit, enable withdraw
+                                $("#txt-connect-wallet").hide();
+                                $("#txt-start-deposit").hide();
+                                $("#txt-week-todeposit").hide();
+                                $("#txt-week-deposited").hide();
+                                $("#txt-week-missed").show();
+
+                                $("#btn-deposit").prop('disabled', true);
+                                $("#btn-withdraw").prop('disabled', false);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        function toastMessage(message) {
+            $("#toast-template .toast-body").text(message);
+            toast = new bootstrap.Toast(document.getElementById('toast-template'));
+            toast.show();
+        }
+
+        $("#btn-connect-wallet").click(async () => {
+            await initWeb3();
+            refresh();
+        });
+
+        $("#btn-approve-dai").click(async () => {
+            if (web3 && contract && dai) {
+                var ownerAddress = web3.currentProvider.selectedAddress;
+                var maxAmount = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+                dai.methods.allowance(ownerAddress, contractAddress).call().then((approvedAmt) => {
+                    if (approvedAmt == 0) {
+                        dai.methods.approve(contractAddress, maxAmount).send({ from: ownerAddress })
+                            .on('receipt', function (confirmationNumber, receipt) {
+                                toastMessage("DAI spending approved.");
+                                refresh();
+                            })
+                            .on('error', function (error, receipt) {
+                                toastMessage("Error: " + error.message);
+                                refresh();
+                            });
+                    } else {
+                        toastMessage("DAI spending has already been approved.");
+                    }
+                });
+            }
+        });
+
+        $("#btn-deposit").click(async () => {
+            if (web3 && contract) {
+                var ownerAddress = web3.currentProvider.selectedAddress;
+
+                contract.methods.players(ownerAddress).call().then((player) => {
+                    var joined = player.addr.toUpperCase() === ownerAddress.toUpperCase() && !player.withdrawn;
+
+                    if (!joined) {
+                        // Player has NOT deposited before
+                        var amt = $("#input-deposit-amt").val() * 10 ** 18;
+                        if (amt) {
+                            if (dai) {
+                                dai.methods.allowance(ownerAddress, contractAddress).call().then((approvedAmt) => {
+                                    if (approvedAmt > amt) {
+                                        contract.methods.joinGame(amt.toString()).send({ from: ownerAddress })
+                                            .on('receipt', function (confirmationNumber, receipt) {
+                                                toastMessage("Joined the game. DAI deposited for this week.");
+                                                refresh();
+                                            })
+                                            .on('error', function (error, receipt) {
+                                                toastMessage("Error: " + error.message);
+                                                refresh();
+                                            });
+                                    } else {
+                                        toastMessage("Error: Please approve DAI spending.");
+                                    }
+                                });
+                            }
+                        } else {
+                            toastMessage("Error: Please input amount.");
+                            refresh();
+                        }
+
+
+                    } else {
+                        // Player has deposited before
+                        contract.methods.makeDeposit().send({ from: ownerAddress })
+                            .on('receipt', function (confirmationNumber, receipt) {
+                                toastMessage("DAI deposited for this week.");
+                                refresh();
+                            })
+                            .on('error', function (error, receipt) {
+                                toastMessage("Error: " + error.message);
+                                refresh();
+                            });
+                    }
+                });
+            }
+            refresh();
+        });
+
+        $("#btn-withdraw").click(async () => {
+            if (web3 && contract) {
+                var ownerAddress = web3.currentProvider.selectedAddress;
+                contract.methods.withdraw().send({ from: ownerAddress })
+                    .on('receipt', function (confirmationNumber, receipt) {
+                        toastMessage("DAI Withdrawn. You can start again.");
+                        refresh();
+                    })
+                    .on('error', function (error, receipt) {
+                        toastMessage("Error: " + error.message);
+                        refresh();
+                    });
+            }
+            refresh();
+        });
+
+        $(document).ready(function () {
+            refresh();
+        });
+
+    </script>
+</body>
+
+</html>
