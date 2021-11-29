@@ -2,7 +2,7 @@
 
 Keep saving every week. Maintain your streak for at least 4 weeks. Earn extra interest from those who miss their streak.
 
-![Sample Screen](./docs/images/sample.jpg)
+![Sample Screen](./docs/images/sample.png)
 
 ## Try it Out
 
@@ -53,8 +53,6 @@ truffle develop
 To run the unit tests use either `npm run test` or `truffle test`.
 
 To run test coverage run `npm run coverage` or `truffle run coverage`.
-
-Create a local `.env` file by copying the sample `.env.sample` file available in the root folder (`cp .env.sample .env`). After your `.env` file is created, edit it with appropriate values for the variables.
 
 ## Contract Deployment
 The project uses [Infura](https://infura.io/) to deploy smart contracts to Ethereum networks (testnets and mainnet). What you'll need:
