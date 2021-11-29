@@ -86,7 +86,6 @@ These are the commands that can be used to deploy (deployment ONLY) the contract
 - Deploy to ropsten: `npm run deploy:ropsten`
 - Deploy to mainnet (PRODUCTION): `npm run deploy:mainnet`
 - Deploy to polygon (PRODUCTION): `npm run deploy:polygon`
-- Deploy to polygon the whitelisted contract (PRODUCTION): `npm run deploy:polygon-whitelisted`
 - Deploy to Celo Alfajores testnet: `npm run deploy:alfajores`
 - Deploy to Celo Mainnet: `npm run deploy:celo`
 
