@@ -9,7 +9,7 @@ const truffleAssert = require("truffle-assertions");
 
 contract("StreakBank", (accounts) => {
 
-  const BN = web3.utils.BN; // https://web3js.readthedocs.io/en/v1.2.7/web3-utils.html#bn
+  const BN = web3.utils.BN;
   const admin = accounts[0];
   let token;
   let aToken;
