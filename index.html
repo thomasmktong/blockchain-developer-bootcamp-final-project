@@ -150,6 +150,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="row pt-5">
+            <div class="col-12">
+                <p class="text-center">
+                    <hr />
+                    Source code in <a href="https://github.com/thomasmktong/blockchain-developer-bootcamp-final-project" target="_blank">GitHub</a>
+                </p>
+            </div>
+        </div>
+
     </div>
 
     <div class="toast-container position-fixed top-0 end-0 p-5" style="z-index: 11">
@@ -168,6 +178,7 @@
     <script>
         const contractAddress = "0x2EEec99e3187DAD3bb8FC930Ea76D014F647A372";
         const daiAddress = "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD";
+        var daiDecimals = null;
 
         var contractABI = null;
         var erc20ABI = null;
@@ -180,6 +191,7 @@
             erc20ABI = data;
         });
 
+        var BN = null;
         var web3 = null;
         var contract = null;
         var dai = null;
@@ -188,6 +200,8 @@
             if (typeof window.ethereum !== "undefined") {
                 await ethereum.request({ method: 'eth_requestAccounts' });
                 web3 = new Web3(window.ethereum);
+                BN = web3.utils.BN;
+                daiDecimals = web3.utils.toBN(1000000000000000000);
                 if (window.ethereum.chainId !== '0x2a') { // kovan
                     await ethereum.request({
                         method: 'wallet_switchEthereumChain',
@@ -279,12 +293,12 @@
 
                             console.log(`segmentJoined ${segmentJoined}, mostRecentSegmentPaid ${mostRecentSegmentPaid}, currentSegment ${currentSegment}`)
 
-                            for(var i = segmentJoined; i <= mostRecentSegmentPaid; i++) {
+                            for (var i = segmentJoined; i <= mostRecentSegmentPaid; i++) {
                                 var span = $('<span />').addClass('material-icons').text('local_fire_department');
                                 span.appendTo("#txt-current-streak");
                             }
 
-                            for(var i = mostRecentSegmentPaid; i < currentSegment; i++) {
+                            for (var i = mostRecentSegmentPaid; i < currentSegment; i++) {
                                 var span = $('<span />').addClass('material-icons').text('check_box_outline_blank');
                                 span.appendTo("#txt-current-streak");
                             }
@@ -370,10 +384,12 @@
 
                     if (!joined) {
                         // Player has NOT deposited before
-                        var amt = $("#input-deposit-amt").val() * 10 ** 18;
+                        var amt = $("#input-deposit-amt").val();
+
                         if (amt) {
                             if (dai) {
                                 dai.methods.allowance(ownerAddress, contractAddress).call().then((approvedAmt) => {
+                                    amt = daiDecimals.mul(new BN(amt));
                                     if (approvedAmt > amt) {
                                         contract.methods.joinGame(amt.toString()).send({ from: ownerAddress })
                                             .on('receipt', function (confirmationNumber, receipt) {
