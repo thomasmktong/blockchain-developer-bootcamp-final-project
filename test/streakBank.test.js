@@ -55,13 +55,6 @@ contract("StreakBank", (accounts) => {
     await token.approve(streakBank.address, segmentPayment, { from: fromAddr });
   }
 
-  async function advanceUntilEligibleForReward() {
-    // We need to to account for the first deposit window.
-    // i.e., if game has 5 segments, we need to add + 1, because while current segment was 0,
-    // it was just the first deposit window (a.k.a., joining period).
-    await timeMachine.advanceTime(weekInSecs * (minSegmentForReward + 1));
-  }
-
   async function joinGamePaySegmentsAndAdvanceTime(player, contractInstance) {
     let contract = contractInstance;
     if (!contract) {
@@ -69,14 +62,11 @@ contract("StreakBank", (accounts) => {
     }
     await approveDaiToContract(player);
     await contract.joinGame(segmentPayment, { from: player });
-    // The payment for the first segment was done upon joining, so we start counting from segment 2 (index 1)
     for (let index = 1; index < minSegmentForReward; index++) {
       await timeMachine.advanceTime(weekInSecs);
       await approveDaiToContract(player);
       await contract.makeDeposit({ from: player });
     }
-    // above, it accounted for 1st deposit window, and then the loop runs till minSegmentForReward - 1.
-    // now, we move 2 more segments (minSegmentForReward-1 and minSegmentForReward) to complete the game.
     await timeMachine.advanceTime(weekInSecs * 2);
   }
 
@@ -102,7 +92,7 @@ contract("StreakBank", (accounts) => {
 
     it("checks if player1 received minted DAI tokens", async () => {
       const usersDaiBalance = await token.balanceOf(player1);
-      assert(usersDaiBalance.div(daiDecimals).gte(new BN(1000)), `Player1 balance should be greater than or equal to 100 DAI at start - current balance: ${usersDaiBalance}`);
+      assert(usersDaiBalance.div(daiDecimals).gte(new BN(1000)), `Player1 balance should be greater than or equal to 1000 DAI at start - current balance: ${usersDaiBalance}`);
     });
   });
 
