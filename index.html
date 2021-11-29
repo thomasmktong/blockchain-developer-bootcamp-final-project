@@ -250,7 +250,7 @@
                 });
 
                 contract.methods.getTotalInterestEarned().call().then((totalInterestEarned) => {
-                    $("#txt-total-interest").text(Number(totalInterestEarned / 10 ** 18).toFixed(20));
+                    $("#txt-total-interest").text(Number(totalInterestEarned / 10 ** 18).toFixed(18));
                 });
 
                 // Player controls
