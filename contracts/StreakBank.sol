@@ -239,8 +239,7 @@ contract StreakBank is Ownable, Pausable {
         uint256 playerReward = 0;
 
         if (
-            currentSegment > 0 &&
-            player.mostRecentSegmentPaid >= (currentSegment - 1) &&
+            (player.mostRecentSegmentPaid + 1) >= currentSegment &&
             (player.mostRecentSegmentPaid - player.segmentJoined) >
             minSegmentForReward
         ) {
