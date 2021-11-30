@@ -21,6 +21,7 @@ Try out the DApp using the UI, or interact with the contract directly on [Kovan 
 
 - [Test Site using Ethereunm Kovan testnet](https://thomasmktong.github.io/blockchain-developer-bootcamp-final-project/)
 - [Deployed Address](./deployed_address.txt)
+- [Screencast](https://youtu.be/10y_5L5H2ts)
 
 ## Technical Design
 
