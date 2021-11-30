@@ -300,6 +300,27 @@ contract("StreakBank", (accounts) => {
       await truffleAssert.reverts(streakBank.withdraw({ from: nonPlayer }), "Player does not exist");
     });
 
+    it("user can deposit and withdraw in the first segment", async () => {
+      const expectedBalance = await token.balanceOf(player1);
+      await approveDaiToContract(player1);
+      await streakBank.joinGame(segmentPayment, { from: player1 });
+      await approveDaiToContract(player1);
+      await streakBank.withdraw({ from: player1 });
+      const usersDaiBalance = await token.balanceOf(player1);
+      assert(usersDaiBalance.eq(expectedBalance));
+    });
+
+    it("user can deposit and withdraw within the same segment", async () => {
+      const expectedBalance = await token.balanceOf(player1);
+      await timeMachine.advanceTimeAndBlock(weekInSecs);
+      await approveDaiToContract(player1);
+      await streakBank.joinGame(segmentPayment, { from: player1 });
+      await approveDaiToContract(player1);
+      await streakBank.withdraw({ from: player1 });
+      const usersDaiBalance = await token.balanceOf(player1);
+      assert(usersDaiBalance.eq(expectedBalance));
+    });
+
     it("sets withdrawn flag to true after user withdraws", async () => {
       await joinGamePaySegmentsAndAdvanceTime(player1);
       await streakBank.withdraw({ from: player1 });
