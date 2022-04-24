@@ -108,7 +108,3 @@ These are the commands that can be used to deploy (deployment ONLY) the contract
 ## Web UI
 
 Source code of the web UI can be found in the [gh-pages branch](https://github.com/thomasmktong/blockchain-developer-bootcamp-final-project/tree/gh-pages) of this repository.
-
-## Miscellaneous
-
-Address for NFT: 0x0C403e0D57Eeb8f091bCfA8EFdF01c00509f04f2
